@@ -101,6 +101,7 @@
         getConversation: function(conversation_id) {
             var data = $.widget.settings;
             data.id = conversation_id;
+            data.conversation_id = conversation_id;
             var args = {
                 type: "POST",
                 url: $.widget.urls.showConversation,
@@ -130,6 +131,7 @@
         createConversation: function(message) {
             var data = $.widget.settings;
             data.request_type = "message";
+            data.message_id = null;
             data.body = message;
             var args = {
                 type: "POST",
@@ -149,8 +151,8 @@
             data.body = message;
             var args = {
                 type: "POST",
-                url: $.widget.urls.createConversation,
-                data: $.widget.settings,
+                url: $.widget.urls.replyToConversation,
+                data: data,
                 callback: $.widget.showMessage
             }
             $.widget.sendRequest(args);
@@ -166,7 +168,6 @@
         },
 
         showMessage: function(data) {
-            console.log(data);
             if (data.conversations.length > 0) {
                 var templateData = $.widget.settings;
                 if (data.conversations[0].messages.length == 1 && data.conversations[0].messages[0].from.is_admin !== false) {
@@ -177,10 +178,10 @@
                     // Render thread view
                     templateData.messages = data.conversations[0].messages;
                     $.widget.insertTemplate('#threadTPL', '#widget-content', templateData);
-                    $.widget.scrollToLastMessage();
-                    $.widget.message_id = data.id;
+                    $.widget.settings.message_id = data.conversations[0].id;
                 }
                 $.widget.showWidget();
+                $.widget.scrollToLastMessage();
                 $.widget.attachReplyListener();
             }
         },
@@ -207,7 +208,9 @@
         },
 
         scrollToLastMessage: function() {
-            $('.widget .content.thread').scrollTop($('.widget .content.thread')[0].scrollHeight);
+            if ($('.widget .content.thread').length > 0) {
+                $('.widget .content.thread').scrollTop($('.widget .content.thread')[0].scrollHeight);
+            }
         },
 
         /*
@@ -220,6 +223,7 @@
                 data: args.data,
                 crossDomain: true,
                 success: function(data) {
+                    console.log(data);
                     args.callback(data)
                 }
             });
