@@ -12,42 +12,92 @@
   <section class="centered">
     <h1 class="logo">Intercom</h1>
   </section>
-  <section class="widget-container">
-    <article class="widget">
-      <section class="close"></section>
-      <section class="header">
-        <h1>New message to Intercom</h1>
-      </section>
-      <section class="content new-message">
-        <form action="#">
-          <textarea></textarea>
-          <button>Send message</button>
-        </form>
-      </section>
-    </article>
-  </section>
-  <aside class="button">
-    <span>?</span>
-  </aside>
+
+  <!-- Templates for the widget -->
+  <script id="widgetTPL" type="text/template">
+    <section class="widget-container">
+      <article class="widget">
+        <section class="close"></section>
+        <span id="widget-content"></span>
+      </article>
+    </section>
+    <aside class="button">
+      <span>?</span>
+    </aside>
+  </script>
+  
+  <script id="newMessageTPL" type="text/template">
+    <section class="header">
+      <h1>New message to {{site_owner}}</h1>
+    </section>
+    <section class="content new-message">
+      <form action="#" method="post">
+        <textarea placeholder="Your message..."></textarea>
+        <input type="submit" value="Send message">
+      </form>
+    </section>
+  </script>
+
+  <script id="singleMessageTPL" type="text/template">
+    <section class="header">
+      <h1>New message from {{site_owner}}</h1>
+    </section>
+    <section class="content message">
+      <section class="avatar" style="background-image: url({{message.from.avatar.square_50}})"></section>
+      <span class="message-content">{{{message.html}}}</span>
+      <form action="#" method="post">
+        <input type="text" name="reply" placeholder="Reply...">
+        <input type="submit" value="Reply">
+      </form>
+    </section>
+  </script>
+
+  <script id="threadTPL" type="text/template">
+    <section class="header">
+      <h1>Conversation with {{site_owner}}</h1>
+    </section>
+    <section class="content thread">
+      <ul>
+      {{#messages}}
+        <li class="{{from.is_admin}}">
+          <span class="avatar" style="background-image: url({{from.avatar.square_50}})"></span>
+          {{{html}}}
+        </li>
+      {{/messages}}
+      </ul>
+      <form action="#">
+        <input type="text" name="reply" placeholder="Reply...">
+        <input type="submit" value="Reply">
+      </form>
+    </section>
+  </script>
+
+  <script id="inboxTPL" type="text/template">
+    <section class="header">
+      <h1>Previous conversations</h1>
+    </section>
+    <section class="content inbox">
+      <ul>
+      {{#messages}}
+        <li class="{{from.is_admin}}">
+          <span class="from">{{from.name}}</from>
+          <span class="message-body">{{{html}}}</span>
+          <span class="when">{{friendly_timestamp</span>
+        </li>
+      {{/messages}}
+      </ul>
+    </section>
+  </script>
 
   <script src="javascripts/lib/jquery-1.11.0.min.js"></script>
   <script src="javascripts/lib/mustache.js"></script>
   <script src="javascripts/widget.js"></script>
   <script>
-    // Custom scripting here
     $(document).ready(function() {
       var email = "donovanh@gmail.com";
       var app_id = "f56d66fb3fa5538bd93854e7f04219b2c761bc69";
-      $.widget.init(email, app_id);
-    });
-
-    $('.widget .close').click(function() {
-      $('.widget').removeClass('show').addClass('hide');
-      $('.button').removeClass('hide');
-    });
-
-    $('.button').click(function() {
-      $.widget.setUpNewMessage();
+      var site_owner = "Donovan";
+      $.widget.init(email, app_id, site_owner);
     });
   </script>
 </body>

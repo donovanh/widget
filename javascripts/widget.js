@@ -1,8 +1,5 @@
 /*
  * A jQuery plugin to replicate some of the basic functionality of Intercom's widget
- * Usage:
- * $.widget("impression", {"email": "donovanh@gmail.com"});
- * $.widget("methodName"[, {}];
  *
 */
 ;(function($) {
@@ -19,17 +16,74 @@
 
         settings: {},
 
-        init: function(email, app_id) {
+        /*
+         *  init: Creates a settings object for future use, inserts the widget and starts a ping
+         */
+        init: function(email, app_id, site_owner) {
             var settings = {
                 user_data: {
                     email: email
                 },
-                app_id: app_id
+                app_id: app_id,
+                site_owner: site_owner
             };
             $.widget.applySettings(settings);
+            $.widget.embedWidget();
             $.widget.sendPing();
         },
 
+        /*
+         *  embedWidget: Embed the widget HTML into the DOM, and attach click events to it
+         */
+        embedWidget: function() {
+            $('body').append('<div id="widget-embed"></div>');
+            $.widget.insertTemplate('#widgetTPL', '#widget-embed', '');
+            $.widget.attachListeners();
+        },
+
+        /*
+         *  attachListeners: Attach click events to the embedded widget
+         */
+        attachListeners: function() {
+            $('.widget .close').click(function() {
+              $('.widget').removeClass('show').addClass('hide');
+              $('.button').removeClass('hide');
+            });
+
+            $('.button').click(function() {
+              $.widget.setUpNewMessage();
+            });
+        },
+
+        /*
+         *  attachNewMessageListener: Attaches submit event for new message form
+         */
+        attachNewMessageListener: function() {
+            $('.new-message form').submit(function(e) {
+                e.preventDefault();
+                var message = $('.new-message textarea').val();
+                if (message.length > 0) {
+                    $.widget.createConversation(message);
+                }
+            });
+        },
+
+        /*
+         *  attachReplyListener: Attaches submit event for reply form
+         */
+        attachReplyListener: function() {
+            $('.widget form').submit(function(e) {
+                e.preventDefault();
+                var message = $('.widget input[type=text]').val();
+                if (message.length > 0) {
+                    $.widget.replyToConversation(message);
+                }
+            });
+        },
+
+        /*
+         *  applySettings: Place user settings into object for later use
+         */
         applySettings: function(settings) {
             $.widget.settings = settings;
         },
@@ -42,7 +96,7 @@
                 type: "POST",
                 url: $.widget.urls.ping,
                 data: $.widget.settings,
-                callback: function(data) { $.widget.handleUnreadConversations(data); }
+                callback: $.widget.handleUnreadConversations
             }
             $.widget.sendRequest(args);
         },
@@ -64,14 +118,14 @@
         getConversation: function(conversation_id) {
             var data = $.widget.settings;
             data.id = conversation_id;
+            data.conversation_id = conversation_id;
             var args = {
                 type: "POST",
                 url: $.widget.urls.showConversation,
                 data: data,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.showMessage
             }
             $.widget.sendRequest(args);
-            // TODO: Render conversation
         },
 
         /*
@@ -82,10 +136,9 @@
                 type: "POST",
                 url: $.widget.urls.inbox,
                 data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.logResponse
             }
             $.widget.sendRequest(args);
-            // TODO: Render conversation list to inbox
         },
 
         /*
@@ -94,16 +147,14 @@
         createConversation: function(message) {
             var data = $.widget.settings;
             data.request_type = "message";
-            // TODO: get message from page
-            data.body = "Test from JS";
+            data.message_id = null;
+            data.body = message;
             var args = {
                 type: "POST",
                 url: $.widget.urls.createConversation,
-                data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                data: data,
+                callback: $.widget.showMessage
             }
-            // TODO: Inset new message into DOM
-            // Do so optimistically?
             $.widget.sendRequest(args);
         },
 
@@ -113,17 +164,13 @@
         replyToConversation: function(message) {
             var data = $.widget.settings;
             data.request_type = "comment";
-            data.message_id = 338574254;
-            // TODO: get message from page
-            data.body = "Test from JS";
+            data.body = message;
             var args = {
                 type: "POST",
-                url: $.widget.urls.createConversation,
-                data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                url: $.widget.urls.replyToConversation,
+                data: data,
+                callback: $.widget.showMessage
             }
-            // TODO: Inset new message into DOM
-            // Do so optimistically?
             $.widget.sendRequest(args);
         },
 
@@ -131,8 +178,41 @@
          *  setUpNewMessage: Sets the new message template and shows widget
          */
         setUpNewMessage: function() {
-            // TODO: Put new message template into place
+            $.widget.insertTemplate('#newMessageTPL', '#widget-content', $.widget.settings);
             $.widget.showWidget();
+            $.widget.attachNewMessageListener();
+        },
+
+        showMessage: function(data) {
+            if (data.conversations.length > 0) {
+                var templateData = $.widget.settings;
+                if (data.conversations[0].messages.length == 1 && data.conversations[0].messages[0].from.is_admin !== false) {
+                    // Render single message
+                    templateData.message = data.conversations[0].messages[0];
+                    $.widget.insertTemplate('#singleMessageTPL', '#widget-content', templateData);
+                } else {
+                    // Render thread view
+                    templateData.messages = data.conversations[0].messages;
+                    $.widget.insertTemplate('#threadTPL', '#widget-content', templateData);
+                    $.widget.settings.message_id = data.conversations[0].id;
+                }
+                $.widget.showWidget();
+                $.widget.scrollToLastMessage();
+                $.widget.attachReplyListener();
+            }
+        },
+
+        /*
+         *  insertTemplate: helper function to insert template with values
+         */
+        insertTemplate: function(source, target, data, append) {
+            var template = $(source).html();
+            var html = Mustache.to_html(template, data);
+            if (append) {
+                $(target).append(html);
+            } else {
+                $(target).html(html);
+            }
         },
 
         /*
@@ -143,17 +223,23 @@
             $('.button').addClass('hide');
         },
 
+        scrollToLastMessage: function() {
+            if ($('.widget .content.thread').length > 0) {
+                $('.widget .content.thread').scrollTop($('.widget .content.thread')[0].scrollHeight);
+            }
+        },
+
         /*
          *  sendRequst: wrapper for jQuery's AJAX method
          */
         sendRequest: function(args) {
-            // args = {type: "", url: "", data: "", callback: ""}
             $.ajax({
                 url: args.url,
                 type: args.type,
                 data: args.data,
                 crossDomain: true,
                 success: function(data) {
+                    console.log(data);
                     args.callback(data)
                 }
             });
