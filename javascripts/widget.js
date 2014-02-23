@@ -89,36 +89,6 @@
          *  If an unread "interrupt" conversation available, show oldest
          */
         handleUnreadConversations: function(response) {
-            response = {
-                "app": {
-                    "name": "Shop Ireland",
-                    "paid": true,
-                    "show_powered_by": true
-                },
-                "user": {
-                    "id": "5307cb60fd080613d900a42a"
-                },
-                "unread_conversation_ids": [
-                    338920091
-                ],
-                "unread_inbox_conversation_ids": [],
-                "unread_interrupt_conversation_ids": [
-                    338920091
-                ],
-                "modules": {
-                    "messages": {
-                        "colors": {
-                            "base": "#333333"
-                        },
-                        "features": {
-                            "widget_attachments": false
-                        },
-                        "activator": "#IntercomDefaultWidget",
-                        "use_activator": true
-                    },
-                    "pusher": {}
-                }
-            };
             if (response.unread_interrupt_conversation_ids.length > 0) {
                 var earliest_conversation = response.unread_interrupt_conversation_ids[response.unread_interrupt_conversation_ids.length-1];
                 $.widget.getConversation(earliest_conversation);
@@ -176,7 +146,7 @@
         replyToConversation: function(message) {
             var data = $.widget.settings;
             data.request_type = "comment";
-            data.body = "Test from JS";
+            data.body = message;
             var args = {
                 type: "POST",
                 url: $.widget.urls.createConversation,
