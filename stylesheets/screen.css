@@ -361,7 +361,7 @@ h1.logo {
       padding: 2%; }
       .widget .content.new-message textarea:focus {
         outline: none; }
-    .widget .content.new-message button {
+    .widget .content.new-message input[type=submit] {
       display: block;
       font-size: 1.25em;
       padding: 0.5em 1em;
@@ -419,12 +419,12 @@ h1.logo {
       background-color: #028e9b;
       padding: 0;
       height: 3em; }
-      .widget .content.thread form input, .widget .content.message form input {
+      .widget .content.thread form input[type=text], .widget .content.message form input[type=text] {
         margin: 0.5em;
         width: 77%;
         border: none;
         padding: 0.5em 0 0.5em 0.5em; }
-      .widget .content.thread form button, .widget .content.message form button {
+      .widget .content.thread form input[type=submit], .widget .content.message form input[type=submit] {
         display: inline;
         padding: 0.5em 1em;
         border: none;
@@ -445,8 +445,8 @@ h1.logo {
         background-size: 100%; }
   .widget .close {
     position: absolute;
-    top: 0.5em;
-    right: 0.5em;
+    top: 0.75em;
+    right: 0.75em;
     width: 1em;
     height: 1em;
     z-index: 20;
@@ -464,7 +464,7 @@ h1.logo {
     .widget .close:hover {
       background: white; }
       .widget .close:hover:before {
-        color: #333333; }
+        color: #666666; }
 
 .button {
   position: absolute;

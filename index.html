@@ -28,9 +28,9 @@
       <h1>New message to {{site_owner}}</h1>
     </section>
     <section class="content new-message">
-      <form action="#">
+      <form action="#" method="post">
         <textarea placeholder="Your message..."></textarea>
-        <button>Send message</button>
+        <input type="submit" value="Send message">
       </form>
     </section>
   </script>
@@ -42,9 +42,9 @@
     <section class="content message">
       <section class="avatar" style="background-image: url({{message.from.avatar.square_50}})"></section>
       <span class="message-content">{{{message.html}}}</span>
-      <form action="#">
+      <form action="#" method="post">
         <input type="text" name="reply" placeholder="Reply...">
-        <button>Reply</button>
+        <input type="submit" value="Reply">
       </form>
     </section>
   </script>
@@ -73,21 +73,11 @@
   <script src="javascripts/lib/mustache.js"></script>
   <script src="javascripts/widget.js"></script>
   <script>
-    // Custom scripting here
     $(document).ready(function() {
       var email = "donovanh@gmail.com";
       var app_id = "f56d66fb3fa5538bd93854e7f04219b2c761bc69";
       var site_owner = "Donovan";
       $.widget.init(email, app_id, site_owner);
-    });
-
-    $('.widget .close').click(function() {
-      $('.widget').removeClass('show').addClass('hide');
-      $('.button').removeClass('hide');
-    });
-
-    $('.button').click(function() {
-      $.widget.setUpNewMessage();
     });
   </script>
 </body>
