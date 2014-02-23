@@ -15,20 +15,59 @@
   <section class="widget-container">
     <article class="widget">
       <section class="close"></section>
-      <section class="header">
-        <h1>New message to Intercom</h1>
-      </section>
-      <section class="content new-message">
-        <form action="#">
-          <textarea></textarea>
-          <button>Send message</button>
-        </form>
-      </section>
+      <span id="widget-content"></span>
     </article>
   </section>
   <aside class="button">
     <span>?</span>
   </aside>
+
+  <!-- Templates for the widget -->
+  <script id="newMessageTPL" type="text/template">
+    <section class="header">
+      <h1>New message to {{site_owner}}</h1>
+    </section>
+    <section class="content new-message">
+      <form action="#">
+        <textarea placeholder="Your message..."></textarea>
+        <button>Send message</button>
+      </form>
+    </section>
+  </script>
+
+  <script id="singleMessageTPL" type="text/template">
+    <section class="header">
+      <h1>New message from {{site_owner}}</h1>
+    </section>
+    <section class="content message">
+      <section class="avatar" style="background-image: url({{message.from.avatar.square_50}})"></section>
+      <span class="message-content">{{{message.html}}}</span>
+      <form action="#">
+        <input type="text" name="reply" placeholder="Reply...">
+        <button>Reply</button>
+      </form>
+    </section>
+  </script>
+
+  <script id="threadTPL" type="text/template">
+    <section class="header">
+      <h1>Conversation with {{site_owner}}</h1>
+    </section>
+    <section class="content thread">
+      <ul>
+      {{#messages}}
+        <li class="{{from.is_admin}}">
+          <span class="avatar" style="background-image: url({{from.avatar.square_50}})"></span>
+          {{{html}}}
+        </li>
+      {{/messages}}
+      </ul>
+      <form action="#">
+        <input type="text" name="reply" placeholder="Reply...">
+        <button>Reply</button>
+      </form>
+    </section>
+  </script>
 
   <script src="javascripts/lib/jquery-1.11.0.min.js"></script>
   <script src="javascripts/lib/mustache.js"></script>
@@ -38,7 +77,8 @@
     $(document).ready(function() {
       var email = "donovanh@gmail.com";
       var app_id = "f56d66fb3fa5538bd93854e7f04219b2c761bc69";
-      $.widget.init(email, app_id);
+      var site_owner = "Donovan";
+      $.widget.init(email, app_id, site_owner);
     });
 
     $('.widget .close').click(function() {

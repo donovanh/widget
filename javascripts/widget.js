@@ -19,15 +19,20 @@
 
         settings: {},
 
-        init: function(email, app_id) {
+        init: function(email, app_id, site_owner) {
             var settings = {
                 user_data: {
                     email: email
                 },
-                app_id: app_id
+                app_id: app_id,
+                site_owner: site_owner
             };
             $.widget.applySettings(settings);
             $.widget.sendPing();
+        },
+
+        logResponse: function(data) {
+            console.log(JSON.stringify(data));
         },
 
         applySettings: function(settings) {
@@ -42,7 +47,7 @@
                 type: "POST",
                 url: $.widget.urls.ping,
                 data: $.widget.settings,
-                callback: function(data) { $.widget.handleUnreadConversations(data); }
+                callback: $.widget.handleUnreadConversations
             }
             $.widget.sendRequest(args);
         },
@@ -52,6 +57,36 @@
          *  If an unread "interrupt" conversation available, show oldest
          */
         handleUnreadConversations: function(response) {
+            // response = {
+            //     "app": {
+            //         "name": "Shop Ireland",
+            //         "paid": true,
+            //         "show_powered_by": true
+            //     },
+            //     "user": {
+            //         "id": "5307cb60fd080613d900a42a"
+            //     },
+            //     "unread_conversation_ids": [
+            //         338920091
+            //     ],
+            //     "unread_inbox_conversation_ids": [],
+            //     "unread_interrupt_conversation_ids": [
+            //         338920091
+            //     ],
+            //     "modules": {
+            //         "messages": {
+            //             "colors": {
+            //                 "base": "#333333"
+            //             },
+            //             "features": {
+            //                 "widget_attachments": false
+            //             },
+            //             "activator": "#IntercomDefaultWidget",
+            //             "use_activator": true
+            //         },
+            //         "pusher": {}
+            //     }
+            // };
             if (response.unread_interrupt_conversation_ids.length > 0) {
                 var earliest_conversation = response.unread_interrupt_conversation_ids[response.unread_interrupt_conversation_ids.length-1];
                 $.widget.getConversation(earliest_conversation);
@@ -68,10 +103,9 @@
                 type: "POST",
                 url: $.widget.urls.showConversation,
                 data: data,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.showMessage
             }
             $.widget.sendRequest(args);
-            // TODO: Render conversation
         },
 
         /*
@@ -82,7 +116,7 @@
                 type: "POST",
                 url: $.widget.urls.inbox,
                 data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.logResponse
             }
             $.widget.sendRequest(args);
             // TODO: Render conversation list to inbox
@@ -100,7 +134,7 @@
                 type: "POST",
                 url: $.widget.urls.createConversation,
                 data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.logResponse
             }
             // TODO: Inset new message into DOM
             // Do so optimistically?
@@ -120,7 +154,7 @@
                 type: "POST",
                 url: $.widget.urls.createConversation,
                 data: $.widget.settings,
-                callback: function(data) { console.log(JSON.stringify(data)); }
+                callback: $.widget.logResponse
             }
             // TODO: Inset new message into DOM
             // Do so optimistically?
@@ -131,8 +165,39 @@
          *  setUpNewMessage: Sets the new message template and shows widget
          */
         setUpNewMessage: function() {
-            // TODO: Put new message template into place
+            $.widget.insertTemplate('#newMessageTPL', '#widget-content', $.widget.settings);
             $.widget.showWidget();
+        },
+
+        showMessage: function(data) {
+            if (data.conversations.length > 0) {
+                var templateData = $.widget.settings;
+                if (data.conversations[0].messages.length == 1) {
+                    // Render single message
+                    console.log(data.conversations[0].messages[0]);
+                    templateData.message = data.conversations[0].messages[0];
+                    $.widget.insertTemplate('#singleMessageTPL', '#widget-content', templateData);
+                } else {
+                    // Render thread view
+                    templateData.messages = data.conversations[0].messages;
+                    $.widget.insertTemplate('#threadTPL', '#widget-content', templateData);
+                    $.widget.scrollToLastMessage();
+                }
+                $.widget.showWidget();
+            }
+        },
+
+        /*
+         *  insertTemplate: helper function to insert template with values
+         */
+        insertTemplate: function(source, target, data, append) {
+            var template = $(source).html();
+            var html = Mustache.to_html(template, data);
+            if (append) {
+                $(target).append(html);
+            } else {
+                $(target).html(html);
+            }
         },
 
         /*
@@ -143,11 +208,14 @@
             $('.button').addClass('hide');
         },
 
+        scrollToLastMessage: function() {
+            $('.widget .content.thread').scrollTop($('.widget .content.thread')[0].scrollHeight);
+        },
+
         /*
          *  sendRequst: wrapper for jQuery's AJAX method
          */
         sendRequest: function(args) {
-            // args = {type: "", url: "", data: "", callback: ""}
             $.ajax({
                 url: args.url,
                 type: args.type,

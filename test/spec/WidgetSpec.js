@@ -23,31 +23,42 @@ describe("Widget", function() {
         },
         app_id : 'f56d66fb3fa5538bd93854e7f04219b2c761bc69'
       },
-      callback : function(data) { $.widget.handleUnreadConversations(data); }
+      callback : $.widget.handleUnreadConversations
     }
-    // TODO: Is there a way to compare an object with toHaveBeenCalledWith(expectedparams) ?
-    expect($.widget.sendRequest).toHaveBeenCalled();
+    expect($.widget.sendRequest).toHaveBeenCalledWith(expectedparams);
   });
 
   // handleUnreadConversations
   it("should get the latest conversation, if there is one", function() {
-    spyOn($.widget, 'sendRequest');
+    spyOn($.widget, 'getConversation');
     var response = {"unread_interrupt_conversation_ids": [338574254]};
     $.widget.handleUnreadConversations(response);
-    expect($.widget.sendRequest).toHaveBeenCalled();
+    expect($.widget.getConversation).toHaveBeenCalledWith(338574254);
   });
   it("should not get the latest conversation, if there isn't one", function() {
-    spyOn($.widget, 'sendRequest');
+    spyOn($.widget, 'getConversation');
     var response = {"unread_interrupt_conversation_ids": []};
     $.widget.handleUnreadConversations(response);
-    expect($.widget.sendRequest).not.toHaveBeenCalled();
+    expect($.widget.getConversation).not.toHaveBeenCalled();
   });
 
   // getConversation
   it("should get a conversation by ID", function() {
     spyOn($.widget, 'sendRequest');
     $.widget.getConversation(338574254);
-    expect($.widget.sendRequest).toHaveBeenCalled();
+    var expectedparams = {
+        type: 'POST',
+        url: 'https: //api.intercom.io/vjs/conversations/show',
+        data: {
+            user_data: {
+                email: 'test@example.com'
+            },
+            app_id: 'f56d66fb3fa5538bd93854e7f04219b2c761bc69',
+            id: 338574254
+        },
+        callback: $.widget.showSingleMessage
+    };
+    expect($.widget.sendRequest).toHaveBeenCalledWith(expectedparams);
   });
 
   // getAllConversations

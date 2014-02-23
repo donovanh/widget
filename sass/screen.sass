@@ -40,10 +40,10 @@ h1.logo
   
   &.show
     display: block
-    animation: show-widget 0.5s cubic-bezier(.71,1.02,.76,.99) forwards
+    animation: show-widget 0.75s cubic-bezier(.65,1,.26,1) forwards
   &.hide
     display: block
-    animation: hide-widget 0.5s cubic-bezier(.71,1.02,.76,.99) forwards
+    animation: hide-widget 0.75s cubic-bezier(.26,1,.65,1) forwards
 
   .header
     width: 100%
@@ -52,6 +52,7 @@ h1.logo
     height: 4em
     background: #028e9b
     background: rgba(2,142,155,0.9)
+    z-index: 5
 
     h1
       font-size: 1.5em
@@ -85,6 +86,96 @@ h1.logo
         background: #ffa922
         color: #fff
 
+    &.thread
+      overflow: scroll
+      padding-bottom: 4em
+      max-height: 20em
+
+      ul
+        list-style: none
+        margin: 0
+        padding: 0
+
+        li
+          background-color: rgba(255, 169, 34, 0.5)
+          padding: 0.5em 1em
+          margin: 1em 1em 1em 4em
+          position: relative
+          border-radius: 0.1em
+
+          &:after
+            content: ""
+            width: 1em
+            height: 0
+            position: absolute
+            top: 0.5em
+            left: -3em
+            border: 1em solid transparent
+            border-right: 1em solid rgba(255, 169, 34, 0.5)
+
+          &.false
+
+            &:before
+              content: "YOU"
+              position: absolute
+              left: -4.75em
+              top: 1.5em
+              font-size: 0.75em
+              color: #333
+
+          &.true
+            background-color: rgba(2,142,155,0.3)
+
+            .avatar
+              position: absolute
+              width: 2.5em
+              height: 2.5em
+              left: -4em
+              top: 0.25em
+              border-radius: 50%
+              background-size: 100%
+
+            &:after
+              border-right: 1em solid rgba(2,142,155,0.3)
+
+    &.thread, &.message
+      form
+        position: fixed
+        bottom: 0
+        left: 0
+        width: 100%
+        background-color: #028e9b
+        padding: 0
+        height: 3em
+
+        input
+          margin: 0.5em
+          width: 77%
+          border: none
+          padding: 0.5em 0 0.5em 0.5em
+
+        button
+          display: inline
+          padding: 0.5em 1em
+          border: none
+          background: #ffa922
+          color: #fff
+
+    &.message
+      overflow: scroll
+      padding-top: 7.25em
+      padding-bottom: 4em
+      max-height: 20em
+
+      .avatar
+        position: absolute
+        width: 2.5em
+        height: 2.5em
+        left: 1em
+        top: 5em
+        border-radius: 50%
+        background-size: 100%
+
   .close
     position: absolute
     top: 0.5em
@@ -116,7 +207,7 @@ h1.logo
   right: 1em
   width: 4em
   height: 4em
-  background: rgba(100,100,100,0.9)
+  background: rgba(0,0,0,0.8)
   box-shadow: 0 0.1em 1em rgba(0,0,0,0.4)
   z-index: 10
   cursor: pointer
