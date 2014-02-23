@@ -20,6 +20,10 @@ To use, make sure jQuery and Mustache are in place, and the [widget.js](https://
       });
     </script>
 
+## Testing
+
+A spec runner web page is in the `test` folder. This runs the set of Jasmine tests.
+
 ## Methods
 
 A list of the methods within the plugin:
