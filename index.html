@@ -12,17 +12,20 @@
   <section class="centered">
     <h1 class="logo">Intercom</h1>
   </section>
-  <section class="widget-container">
-    <article class="widget">
-      <section class="close"></section>
-      <span id="widget-content"></span>
-    </article>
-  </section>
-  <aside class="button">
-    <span>?</span>
-  </aside>
 
   <!-- Templates for the widget -->
+  <script id="widgetTPL" type="text/template">
+    <section class="widget-container">
+      <article class="widget">
+        <section class="close"></section>
+        <span id="widget-content"></span>
+      </article>
+    </section>
+    <aside class="button">
+      <span>?</span>
+    </aside>
+  </script>
+  
   <script id="newMessageTPL" type="text/template">
     <section class="header">
       <h1>New message to {{site_owner}}</h1>
@@ -66,6 +69,23 @@
         <input type="text" name="reply" placeholder="Reply...">
         <input type="submit" value="Reply">
       </form>
+    </section>
+  </script>
+
+  <script id="inboxTPL" type="text/template">
+    <section class="header">
+      <h1>Previous conversations</h1>
+    </section>
+    <section class="content inbox">
+      <ul>
+      {{#messages}}
+        <li class="{{from.is_admin}}">
+          <span class="from">{{from.name}}</from>
+          <span class="message-body">{{{html}}}</span>
+          <span class="when">{{friendly_timestamp</span>
+        </li>
+      {{/messages}}
+      </ul>
     </section>
   </script>
 

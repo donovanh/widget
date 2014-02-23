@@ -1,8 +1,5 @@
 /*
  * A jQuery plugin to replicate some of the basic functionality of Intercom's widget
- * Usage:
- * $.widget("impression", {"email": "donovanh@gmail.com"});
- * $.widget("methodName"[, {}];
  *
 */
 ;(function($) {
@@ -19,6 +16,9 @@
 
         settings: {},
 
+        /*
+         *  init: Creates a settings object for future use, inserts the widget and starts a ping
+         */
         init: function(email, app_id, site_owner) {
             var settings = {
                 user_data: {
@@ -28,10 +28,22 @@
                 site_owner: site_owner
             };
             $.widget.applySettings(settings);
-            $.widget.attachListeners();
+            $.widget.embedWidget();
             $.widget.sendPing();
         },
 
+        /*
+         *  embedWidget: Embed the widget HTML into the DOM, and attach click events to it
+         */
+        embedWidget: function() {
+            $('body').append('<div id="widget-embed"></div>');
+            $.widget.insertTemplate('#widgetTPL', '#widget-embed', '');
+            $.widget.attachListeners();
+        },
+
+        /*
+         *  attachListeners: Attach click events to the embedded widget
+         */
         attachListeners: function() {
             $('.widget .close').click(function() {
               $('.widget').removeClass('show').addClass('hide');
@@ -43,6 +55,9 @@
             });
         },
 
+        /*
+         *  attachNewMessageListener: Attaches submit event for new message form
+         */
         attachNewMessageListener: function() {
             $('.new-message form').submit(function(e) {
                 e.preventDefault();
@@ -53,6 +68,9 @@
             });
         },
 
+        /*
+         *  attachReplyListener: Attaches submit event for reply form
+         */
         attachReplyListener: function() {
             $('.widget form').submit(function(e) {
                 e.preventDefault();
@@ -63,10 +81,9 @@
             });
         },
 
-        logResponse: function(data) {
-            console.log(JSON.stringify(data));
-        },
-
+        /*
+         *  applySettings: Place user settings into object for later use
+         */
         applySettings: function(settings) {
             $.widget.settings = settings;
         },
@@ -122,7 +139,6 @@
                 callback: $.widget.logResponse
             }
             $.widget.sendRequest(args);
-            // TODO: Render conversation list to inbox
         },
 
         /*
@@ -136,7 +152,7 @@
             var args = {
                 type: "POST",
                 url: $.widget.urls.createConversation,
-                data: $.widget.settings,
+                data: data,
                 callback: $.widget.showMessage
             }
             $.widget.sendRequest(args);

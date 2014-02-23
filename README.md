@@ -1,17 +1,59 @@
-# Skeleton for simple HTML/JS projects
+# jQuery Widget
 
-Includes Grunt to compile SASS into CSS, along with Autoprefixer and Grunt GH-Pages for deployment. Testing is handled by Jasmine.
+This is set up for demonstration purposes only, not to be used in any production environment.
 
-## Setup
+## Set up
 
-Clone the repo and run `npm install` to pull dependencies.
+The plugin requires:
 
-## Usage
+* jQuery
+* Mustache.js
 
-Run `grunt` to set up watches and SASS compiling.
+To use, make sure jQuery and Mustache are in place, and the [widget.js](https://github.com/donovanh/widget/blob/master/javascripts/widget.js) file is also referenced, then initialise the plugin like so:
 
-`grunt deploy` will create dist folder containing HTML, images, JS, CSS and push to gh-pages of your current repo.
+    <script>
+      $(document).ready(function() {
+        var email = "user@example.com";
+        var app_id = "YOUR_APP_ID";
+        var site_owner = "Your App Name";
+        $.widget.init(email, app_id, site_owner);
+      });
+    </script>
 
-### License
+## Methods
 
-MIT
+A list of the methods within the plugin:
+
+### Visual
+
+* scrollToLastMessage
+* showWidget
+
+### Main methods
+
+* init
+* sendPing
+* handleUnreadConversations
+* getConversation
+* getAllConversations       # Inbox: not implemented in this version
+* createConversation
+* replyToConversation
+* showMessage
+
+### Helpers
+
+* embedWidget
+* attachListeners
+* attachNewMessageListener
+* attachReplyListener
+* applySettings
+* setUpNewMessage
+* insertTemplate
+* sendRequest    # Wrapper for jQuery's AJAX method * separate so that it can be Spied in Jasmine
+
+## Technology used
+
+* jQuery
+* Mustache templates
+* SASS + Autoprefixer + Grunt.js for build
+* Project skeleton files: https://github.com/donovanh/sass-grunt-jasmine-skeleton
