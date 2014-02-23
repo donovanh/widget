@@ -3,15 +3,52 @@
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="x-ua-compatible" content="ie=edge, chrome=1">
-  <title>Title</title>
+  <title>Widget Prototype</title>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Lemon">
   <link rel="stylesheet" href="stylesheets/screen.css">
 </head>
 <body>
+  <section class="bg"></section>
+  <section class="centered">
+    <h1 class="logo">Intercom</h1>
+  </section>
+  <section class="widget-container">
+    <article class="widget">
+      <section class="close"></section>
+      <section class="header">
+        <h1>New message to Intercom</h1>
+      </section>
+      <section class="content new-message">
+        <form action="#">
+          <textarea></textarea>
+          <button>Send message</button>
+        </form>
+      </section>
+    </article>
+  </section>
+  <aside class="button">
+    <span>?</span>
+  </aside>
+
   <script src="javascripts/lib/jquery-1.11.0.min.js"></script>
-  <script src="javascripts/app.js"></script>
+  <script src="javascripts/lib/mustache.js"></script>
+  <script src="javascripts/widget.js"></script>
   <script>
     // Custom scripting here
-    
+    $(document).ready(function() {
+      var email = "donovanh@gmail.com";
+      var app_id = "f56d66fb3fa5538bd93854e7f04219b2c761bc69";
+      $.widget.init(email, app_id);
+    });
+
+    $('.widget .close').click(function() {
+      $('.widget').removeClass('show').addClass('hide');
+      $('.button').removeClass('hide');
+    });
+
+    $('.button').click(function() {
+      $.widget.setUpNewMessage();
+    });
   </script>
 </body>
 </html>
