@@ -56,7 +56,7 @@ describe("Widget", function() {
             app_id: 'f56d66fb3fa5538bd93854e7f04219b2c761bc69',
             id: 338574254
         },
-        callback: $.widget.showSingleMessage
+        callback: $.widget.showMessage
     };
     expect($.widget.sendRequest).toHaveBeenCalledWith(expectedparams);
   });

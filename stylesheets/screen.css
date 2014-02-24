@@ -1,3 +1,13 @@
+/* Main dependencies */
+/* Variables */
+/* General settings for layout */
+/* Mixins for use in the widget styles */
+/* Colour values for use in the widget */
+/* Main widget colours */
+/* Thread view */
+/* Forms */
+/* Button styles */
+/* Generic page styles */
 /*! normalize.css v3.0.0 | MIT License | git.io/normalize */
 /*
  * 1. Set default font family to sans-serif.
@@ -288,6 +298,7 @@ table {
 td, th {
   padding: 0; }
 
+/* General styles for the demo page */
 body {
   font-size: 16px; }
 
@@ -315,6 +326,8 @@ h1.logo {
   transform: translate(-50%, -50%);
   z-index: 2; }
 
+/* Widget-specific styles */
+/* Styles for the widget and button */
 .widget-container {
   -webkit-perspective: 800px;
   perspective: 800px;
@@ -466,15 +479,21 @@ h1.logo {
       .widget .close:hover:before {
         color: #666666; }
 
-.button {
+.button-container {
   position: absolute;
-  bottom: 1em;
-  right: 1em;
+  bottom: 0;
+  right: 0;
+  width: 5em;
+  height: 5em;
+  z-index: 10;
+  overflow: hidden; }
+
+.button {
   width: 4em;
   height: 4em;
+  background: black;
   background: rgba(0, 0, 0, 0.8);
   box-shadow: 0 0.1em 1em rgba(0, 0, 0, 0.4);
-  z-index: 10;
   cursor: pointer;
   -webkit-transition: all 0.25s ease-out;
   transition: all 0.25s ease-out;
@@ -484,6 +503,7 @@ h1.logo {
   animation-delay: 0.5s;
   opacity: 0; }
   .button:hover {
+    background: #028e9b;
     background: rgba(2, 142, 155, 0.9);
     -webkit-transform: translate(0, -0.1em);
     transform: translate(0, -0.1em);
@@ -498,13 +518,13 @@ h1.logo {
     text-align: center;
     color: white; }
 
+/* Animation on widget elements */
 @-webkit-keyframes fade-in {
   0% {
     opacity: 0; }
 
   100% {
     opacity: 1; } }
-
 @keyframes fade-in {
   0% {
     opacity: 0; }
@@ -551,3 +571,19 @@ h1.logo {
     -webkit-transform: rotateX(90deg) translateY(-20em);
     transform: rotateX(90deg) translateY(-20em);
     opacity: 0; } }
+/* Media queries to target specific viewport sizes */
+@media only screen and (max-width: 500px) {
+  body {
+    font-size: 14px; }
+
+  .widget-container, .widget {
+    width: 100%; }
+
+  .widget-container {
+    top: 0;
+    -webkit-transform: translate(-50%, 0);
+    transform: translate(-50%, 0); }
+
+  .widget .header h1 {
+    font-size: 1em;
+    line-height: 4em; } }

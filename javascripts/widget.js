@@ -106,6 +106,9 @@
          *  If an unread "interrupt" conversation available, show oldest
          */
         handleUnreadConversations: function(response) {
+            /* Debugging: remove this */
+            var response = {"app":{"name":"Shop Ireland","paid":true,"show_powered_by":true},"user":{"id":"5307cb60fd080613d900a42a"},"unread_conversation_ids":[339343228],"unread_inbox_conversation_ids":[],"unread_interrupt_conversation_ids":[339343228],"modules":{"messages":{"colors":{"base":"#333333"},"features":{"widget_attachments":false},"activator":"#IntercomDefaultWidget","use_activator":true},"pusher":{}}};
+            /*****/
             if (response.unread_interrupt_conversation_ids.length > 0) {
                 var earliest_conversation = response.unread_interrupt_conversation_ids[response.unread_interrupt_conversation_ids.length-1];
                 $.widget.getConversation(earliest_conversation);
@@ -118,7 +121,6 @@
         getConversation: function(conversation_id) {
             var data = $.widget.settings;
             data.id = conversation_id;
-            data.conversation_id = conversation_id;
             var args = {
                 type: "POST",
                 url: $.widget.urls.showConversation,
@@ -183,6 +185,9 @@
             $.widget.attachNewMessageListener();
         },
 
+        /*
+         *  showMessage: Displays message data through either single or thread template
+         */
         showMessage: function(data) {
             if (data.conversations.length > 0) {
                 var templateData = $.widget.settings;
@@ -194,7 +199,9 @@
                     // Render thread view
                     templateData.messages = data.conversations[0].messages;
                     $.widget.insertTemplate('#threadTPL', '#widget-content', templateData);
+                    // Set current message id for routing replies
                     $.widget.settings.message_id = data.conversations[0].id;
+                    $.widget.settings.id = data.conversations[0].id;
                 }
                 $.widget.showWidget();
                 $.widget.scrollToLastMessage();
