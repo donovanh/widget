@@ -17,6 +17,7 @@
   <script id="widgetTPL" type="text/template">
     <section class="widget-container">
       <article class="widget">
+        <section class="writing-mode"></section>
         <section class="close"></section>
         <span id="widget-content"></span>
       </article>
@@ -80,13 +81,14 @@
     </section>
     <section class="content inbox">
       <ul>
-      {{#messages}}
-        <li class="{{from.is_admin}}">
-          <span class="from">{{from.name}}</from>
-          <span class="message-body">{{{html}}}</span>
-          <span class="when">{{friendly_timestamp</span>
-        </li>
-      {{/messages}}
+      {{#conversations}}
+        <a href="#" data-url="{{id}}">
+          <li class="{{from.is_admin}}">
+              <span class="from">{{from.name}}</span>
+              <span class="message-body">{{{html}}}</span>
+          </li>
+        </a>
+      {{/conversations}}
       </ul>
     </section>
   </script>

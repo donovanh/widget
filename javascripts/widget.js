@@ -50,9 +50,27 @@
               $('.button').removeClass('hide');
             });
 
+            $('.widget .writing-mode').click(function() {
+              if ($('.writing-mode').hasClass("inbox")) {
+                $('.writing-mode').removeClass("inbox");
+                $.widget.setWritingMode('writing');
+              } else {
+                $('.writing-mode').addClass("inbox");
+                $.widget.setWritingMode('inbox');
+                $.widget.getAllConversations($.widget.embedInbox);
+              }
+            });
+
             $('.button').click(function() {
               $.widget.setUpNewMessage();
             });
+        },
+
+        /*
+         *  setWritingMode: 
+         */
+        setWritingMode: function(mode) {
+            console.log(mode);
         },
 
         /*
@@ -107,7 +125,7 @@
          */
         handleUnreadConversations: function(response) {
             /* Debugging: remove this */
-            var response = {"app":{"name":"Shop Ireland","paid":true,"show_powered_by":true},"user":{"id":"5307cb60fd080613d900a42a"},"unread_conversation_ids":[339343228],"unread_inbox_conversation_ids":[],"unread_interrupt_conversation_ids":[339343228],"modules":{"messages":{"colors":{"base":"#333333"},"features":{"widget_attachments":false},"activator":"#IntercomDefaultWidget","use_activator":true},"pusher":{}}};
+            // var response = {"app":{"name":"Shop Ireland","paid":true,"show_powered_by":true},"user":{"id":"5307cb60fd080613d900a42a"},"unread_conversation_ids":[339343228],"unread_inbox_conversation_ids":[],"unread_interrupt_conversation_ids":[339343228],"modules":{"messages":{"colors":{"base":"#333333"},"features":{"widget_attachments":false},"activator":"#IntercomDefaultWidget","use_activator":true},"pusher":{}}};
             /*****/
             if (response.unread_interrupt_conversation_ids.length > 0) {
                 var earliest_conversation = response.unread_interrupt_conversation_ids[response.unread_interrupt_conversation_ids.length-1];
@@ -133,14 +151,31 @@
         /*
          *  getAllConversations: Retrieves the inbox
          */
-        getAllConversations: function() {
+        getAllConversations: function(callback) {
             var args = {
                 type: "POST",
                 url: $.widget.urls.inbox,
                 data: $.widget.settings,
-                callback: $.widget.logResponse
+                callback: callback
             }
             $.widget.sendRequest(args);
+        },
+
+        embedInbox: function(response) {
+            var data = {};
+            data.conversations = response.conversations;
+            $.each(data.conversations, function(index, item) {
+                item.from = item.messages[0].from;
+                item.html = item.messages[0].html;
+                item.friendly_timestamp = item.messages[0].created_at + " " + Date.parse(item.messages[0].created_at.split('.')[0]);
+            });
+            $.widget.insertTemplate('#inboxTPL', '#widget-content', data);
+            $('.content.inbox a').click(function(e) {
+                e.preventDefault();
+                var conversationID = $(this).attr('data-url');
+                console.log(conversationID);
+                $.widget.getConversation(conversationID);
+            });
         },
 
         /*
@@ -194,6 +229,7 @@
                 if (data.conversations[0].messages.length == 1 && data.conversations[0].messages[0].from.is_admin !== false) {
                     // Render single message
                     templateData.message = data.conversations[0].messages[0];
+                    $.widget.settings.message_id = data.conversations[0].id;
                     $.widget.insertTemplate('#singleMessageTPL', '#widget-content', templateData);
                 } else {
                     // Render thread view

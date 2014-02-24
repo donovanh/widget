@@ -456,6 +456,43 @@ h1.logo {
         top: 5em;
         border-radius: 50%;
         background-size: 100%; }
+    .widget .content.inbox {
+      overflow: scroll;
+      padding-top: 3.25em;
+      padding-bottom: 4em;
+      max-height: 20em; }
+      .widget .content.inbox ul {
+        margin: 0;
+        padding: 0; }
+        .widget .content.inbox ul li {
+          list-style: none;
+          display: table;
+          width: 100%;
+          margin: 0;
+          background: rgba(255, 169, 34, 0.5); }
+        .widget .content.inbox ul a {
+          color: #333333; }
+          .widget .content.inbox ul a:nth-child(odd) li {
+            background: rgba(2, 142, 155, 0.3); }
+          .widget .content.inbox ul a span {
+            display: table-cell;
+            width: 40%;
+            padding: 0; }
+  .widget .writing-mode {
+    position: absolute;
+    top: 0.75em;
+    right: 2.75em;
+    width: 1em;
+    height: 1em;
+    z-index: 20;
+    cursor: pointer;
+    -webkit-transition: all 0.25s ease-out;
+    transition: all 0.25s ease-out; }
+    .widget .writing-mode:before {
+      content: "I";
+      color: white; }
+    .widget .writing-mode.inbox:before {
+      content: "W"; }
   .widget .close {
     position: absolute;
     top: 0.75em;
