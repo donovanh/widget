@@ -11,7 +11,7 @@
   background: $widget-background
   box-shadow: 0 1em 5em rgba(100,100,100,0.4), 0 0.25em 0 rgba(0,0,0,0.5)
   display: none
-  
+
   &.show
     display: block
     animation: show-widget 0.75s cubic-bezier(.65,1,.26,1) forwards
@@ -149,6 +149,54 @@
         top: 5em
         border-radius: 50%
         background-size: 100%
+
+    &.inbox
+      overflow: scroll
+      padding-top: 3.25em
+      padding-bottom: 4em
+      max-height: 20em
+
+      ul
+        margin: 0
+        padding: 0
+
+        li
+          list-style: none
+          display: table
+          width: 100%
+          margin: 0
+          background: $thread-you-message-background
+          
+
+        a
+          color: #333
+
+          &:nth-child(odd)
+            li
+              background: $thread-admin-message-background
+
+          span
+            display: table-cell
+            width: 40%
+            padding: 0
+
+  .writing-mode
+    position: absolute
+    top: 0.75em
+    right: 2.75em
+    width: 1em
+    height: 1em
+    z-index: 20
+    cursor: pointer
+    transition: all 0.25s ease-out
+
+    &:before
+      content: "I"
+      color: #fff
+
+    &.inbox
+      &:before
+        content: "W"
 
   .close
     position: absolute
