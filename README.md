@@ -2,6 +2,10 @@
 
 This is set up for demonstration purposes only, not to be used in any production environment.
 
+## Demo
+
+A demo is online at [hop.ie/widget](http://hop.ie/widget).
+
 ## Set up
 
 The plugin requires:
