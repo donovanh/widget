@@ -1,0 +1,18 @@
+/* Media queries to target specific viewport sizes */
+
+@media only screen and (max-width: $small-screen-width)
+  body
+    font-size: 14px
+
+  .widget-container, .widget
+    width: 100%
+
+  .widget-container
+    top: 0
+    transform: translate(-50%, 0)
+
+  .widget
+    .header
+      h1
+        font-size: 1em
+        line-height: 4em

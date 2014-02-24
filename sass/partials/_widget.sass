@@ -1,0 +1,213 @@
+/* Styles for the widget and button */
+
+.widget-container
+  @extend .centered
+  perspective: 800px
+  transform-style: preserve-3d
+
+.widget
+  width: 30em
+  min-height: 24em
+  background: $widget-background
+  box-shadow: 0 1em 5em rgba(100,100,100,0.4), 0 0.25em 0 rgba(0,0,0,0.5)
+  display: none
+  
+  &.show
+    display: block
+    animation: show-widget 0.75s cubic-bezier(.65,1,.26,1) forwards
+  &.hide
+    display: block
+    animation: hide-widget 0.75s cubic-bezier(.26,1,.65,1) forwards
+
+  .header
+    width: 100%
+    position: fixed
+    top: 0
+    height: 4em
+    background: $widget-header-hex
+    background: $widget-header-rgba
+    z-index: 5
+
+    h1
+      font-size: 1.5em
+      line-height: 2.6666em
+      text-align: center
+      color: #fff
+      margin: 0
+      padding: 0
+
+  .content
+    padding: 5em 1em 1em
+
+    &.new-message
+      textarea
+        width: 90%
+        height: 14em
+        display: block
+        margin: 1em auto 0 auto
+        border: 1px solid $textarea-border
+        padding: 2%
+
+        &:focus
+          outline: none
+
+      input[type=submit]
+        display: block
+        font-size: 1.25em
+        padding: 0.5em 1em
+        margin: 1em auto
+        border: none
+        background: #ffa922
+        color: #fff
+
+    &.thread
+      overflow: scroll
+      padding-bottom: 4em
+      max-height: 20em
+
+      ul
+        list-style: none
+        margin: 0
+        padding: 0
+
+        li
+          background-color: $thread-you-message-background
+          padding: 0.5em 1em
+          margin: 1em 1em 1em 4em
+          position: relative
+          border-radius: 0.1em
+
+          &:after
+            content: ""
+            width: 1em
+            height: 0
+            position: absolute
+            top: 0.5em
+            left: -3em
+            border: 1em solid transparent
+            border-right: 1em solid $thread-you-message-background
+
+          &.false
+
+            &:before
+              content: "YOU"
+              position: absolute
+              left: -4.75em
+              top: 1.5em
+              font-size: 0.75em
+              color: #333
+
+          &.true
+            background-color: $thread-admin-message-background
+
+            .avatar
+              position: absolute
+              width: 2.5em
+              height: 2.5em
+              left: -4em
+              top: 0.25em
+              border-radius: 50%
+              background-size: 100%
+
+            &:after
+              border-right: 1em solid $thread-admin-message-background
+
+    &.thread, &.message
+      form
+        position: fixed
+        bottom: 0
+        left: 0
+        width: 100%
+        background-color: $form-background-hex
+        padding: 0
+        height: 3em
+
+        input[type=text]
+          margin: 0.5em
+          width: 77%
+          border: none
+          padding: 0.5em 0 0.5em 0.5em
+
+        input[type=submit]
+          display: inline
+          padding: 0.5em 1em
+          border: none
+          background: $submit-button-hex
+          color: #fff
+
+    &.message
+      overflow: scroll
+      padding-top: 7.25em
+      padding-bottom: 4em
+      max-height: 20em
+
+      .avatar
+        position: absolute
+        width: 2.5em
+        height: 2.5em
+        left: 1em
+        top: 5em
+        border-radius: 50%
+        background-size: 100%
+
+  .close
+    position: absolute
+    top: 0.75em
+    right: 0.75em
+    width: 1em
+    height: 1em
+    z-index: 20
+    cursor: pointer
+    transition: all 0.25s ease-out
+
+    &:before
+      display: block
+      content: "X"
+      text-align: center
+      font-size: 0.9em
+      line-height: 1.2em
+      height: 1em
+      color: #fff
+
+    &:hover
+      background: #fff
+      &:before
+        color: #666
+
+.button-container
+  position: absolute
+  bottom: 0
+  right: 0
+  width: 5em
+  height: 5em
+  z-index: 10
+  overflow: hidden
+
+.button
+  width: 4em
+  height: 4em
+  background: $button-background-hex
+  background: $button-background-rgba
+  box-shadow: 0 0.1em 1em rgba(0,0,0,0.4)
+  cursor: pointer
+  transition: all 0.25s ease-out
+  animation: fade-in 0.5s ease-out forwards
+  animation-delay: 0.5s
+  opacity: 0
+  
+  &:hover
+    background: $button-hover-background-hex
+    background: $button-hover-background-rgba
+    transform: translate(0, -0.1em)
+    box-shadow: 0 0.3em 1em rgba(0,0,0,0.4)
+
+  &.hide
+    transform: translateX(10em)
+
+  span
+    display: block
+    line-height: 2em
+    font-size: 2em
+    text-align: center
+    color: $button-text-colour
+
