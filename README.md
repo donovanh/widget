@@ -11,6 +11,8 @@ The plugin requires:
 
 To use, make sure jQuery and Mustache are in place, and the [widget.js](https://github.com/donovanh/widget/blob/master/javascripts/widget.js) file is also referenced, then initialise the plugin like so:
 
+*Note:* The index.html file contains views, and the CSS contains CSS used by the demo, in addition to this code.
+
     <script>
       $(document).ready(function() {
         var email = "user@example.com";
@@ -23,6 +25,10 @@ To use, make sure jQuery and Mustache are in place, and the [widget.js](https://
 ## Testing
 
 A spec runner web page is in the `test` folder. This runs the set of Jasmine tests.
+
+## Grunt
+
+A Grunt file watches the SASS and builds CSS, as well as handling deployment to Github. The `grunt` command starts the watcher and `grunt deploy` pushes to the current Github remote.
 
 ## Methods
 
